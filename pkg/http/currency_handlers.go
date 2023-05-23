@@ -4,7 +4,6 @@ import (
 	"context"
 	"exchange/pkg"
 	"exchange/pkg/domain"
-	"log"
 	"net/http"
 
 	"github.com/labstack/echo"
@@ -29,7 +28,7 @@ func NewCurrencyHandler(e *echo.Echo, services *pkg.Services) {
 
 func (e *ExchangeHandler) GetBtcToUahCurrency(c echo.Context) error {
 	ctx := c.Request().Context()
-	log.Print("got request")
+
 	cur := domain.GetBitcoinToUAH()
 	resp, err := e.services.CurrencyService.GetCurrency(ctx, cur)
 	if err != nil {
