@@ -1,8 +1,10 @@
 package http
 
 import (
+	"context"
 	"exchange/pkg"
 	"exchange/pkg/domain"
+	"log"
 	"net/http"
 
 	"github.com/labstack/echo"
@@ -27,9 +29,9 @@ func NewCurrencyHandler(e *echo.Echo, services *pkg.Services) {
 
 func (e *ExchangeHandler) GetBtcToUahCurrency(c echo.Context) error {
 	ctx := c.Request().Context()
-
+	log.Print("got request")
 	cur := domain.GetBitcoinToUAH()
-	resp, err := e.services.CurrencyService.GetPrice(ctx, cur)
+	resp, err := e.services.CurrencyService.GetCurrency(ctx, cur)
 	if err != nil {
 		return c.JSON(getStatusCode(err), nil)
 	}
@@ -38,11 +40,15 @@ func (e *ExchangeHandler) GetBtcToUahCurrency(c echo.Context) error {
 }
 
 func (e *ExchangeHandler) SendEmails(c echo.Context) error {
-	ctx := c.Request().Context()
+	go func() {
+		if err := e.services.NotificatioinService.Notify(
+			context.Background(),
+			domain.DefaultNotification(),
+		); err != nil {
 
-	if err := e.services.NotificatioinService.Notify(ctx, domain.DefaultNotification()); err != nil {
-		// TODO: ADD LOGGER WITH ERROR
-	}
+			// TODO: ADD LOGGER WITH ERROR
+		}
+	}()
 
 	return c.JSON(http.StatusOK, nil)
 }
@@ -50,9 +56,13 @@ func (e *ExchangeHandler) SendEmails(c echo.Context) error {
 func (e *ExchangeHandler) CreateMailSubscriber(c echo.Context) error {
 	ctx := c.Request().Context()
 
-	email := c.FormValue("email")
+	email := domain.NewEmailUser(c.FormValue("email"))
 
-	if err := e.services.EmailUserService.NewEmailUser(ctx, domain.NewEmailUser(email)); err != nil {
+	if err := email.Validate(); err != nil {
+		return c.JSON(getStatusCode(err), nil)
+	}
+
+	if err := e.services.EmailUserService.NewEmailUser(ctx, email); err != nil {
 		return c.JSON(getStatusCode(err), nil)
 	}
 
@@ -71,6 +81,8 @@ func getStatusCode(err error) int {
 		return http.StatusConflict
 	case domain.ErrNotFound:
 		return http.StatusNotFound
+	case domain.ErrInvalidStatus, domain.ErrBadRequst:
+		return http.StatusBadRequest
 	default:
 		return http.StatusInternalServerError
 	}

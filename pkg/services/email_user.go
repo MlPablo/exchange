@@ -21,5 +21,14 @@ func NewEmailUserService(
 }
 
 func (e *emailUserService) NewEmailUser(ctx context.Context, emailUser *domain.EmailUser) error {
+	exist, err := e.emailUserRepo.EmailExist(ctx, emailUser.Email)
+	if err != nil {
+		return err
+	}
+
+	if exist {
+		return domain.ErrAlreadyExist
+	}
+
 	return e.emailUserRepo.SaveEmail(ctx, emailUser)
 }

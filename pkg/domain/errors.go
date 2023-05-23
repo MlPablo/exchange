@@ -7,4 +7,5 @@ var (
 	ErrNotFound       = errors.New("item not found")
 	ErrAlreadyExist   = errors.New("item alreade exist")
 	ErrBadRequst      = errors.New("invalid request")
+	ErrInvalidStatus  = errors.New("invalid status")
 )

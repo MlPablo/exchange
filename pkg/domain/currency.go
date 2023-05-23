@@ -15,5 +15,5 @@ func GetBitcoinToUAH() *Currency {
 }
 
 type ICurrencyService interface {
-	GetPrice(ctx context.Context, c *Currency) (int, error)
+	GetCurrency(ctx context.Context, c *Currency) (float64, error)
 }

@@ -33,7 +33,7 @@ func NewNotificationService(
 func (n *notificationService) Notify(ctx context.Context, not *domain.Notification) error {
 	btcUsd := domain.GetBitcoinToUAH()
 
-	currency, err := n.currencyService.GetPrice(ctx, btcUsd)
+	currency, err := n.currencyService.GetCurrency(ctx, btcUsd)
 	if err != nil {
 		return err
 	}

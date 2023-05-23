@@ -3,7 +3,6 @@ package currencyapi
 import (
 	"context"
 	"encoding/json"
-	"errors"
 	"exchange/pkg/domain"
 	"fmt"
 	"io/ioutil"
@@ -69,8 +68,7 @@ func (api *CurrencyApi) makeLatestCurrencyRequest(
 	}
 
 	if resp.StatusCode != http.StatusOK {
-		// TODO: add custom error here
-		return nil, errors.New("something go wrong on request")
+		return nil, domain.ErrInvalidStatus
 	}
 
 	defer resp.Body.Close()
