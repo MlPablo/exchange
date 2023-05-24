@@ -6,7 +6,7 @@ import (
 	_http "exchange/pkg/http"
 	"exchange/pkg/infrastructure/currency/currencyapi"
 	"exchange/pkg/infrastructure/mail"
-	"exchange/pkg/repository/mem"
+	"exchange/pkg/repository/filesysytem"
 	"exchange/pkg/services"
 	"log"
 	"net/http"
@@ -24,7 +24,11 @@ func main() {
 	ctx := context.Background()
 
 	e := echo.New()
-	mailRepo := mem.NewMemoryRepository()
+	// mailRepo := mem.NewMemoryRepository()
+	mailRepo, err := filesysytem.NewFileSystemRepository(os.Getenv("FILE_STORE_PATH"))
+	if err != nil {
+		log.Fatal(err)
+	}
 
 	mCfg, err := mail.NewConfig(
 		os.Getenv("EMAIL_LOGIN"),
