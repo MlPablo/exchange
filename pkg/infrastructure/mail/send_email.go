@@ -24,7 +24,7 @@ func NewMailService(cfg *Config) *EmailSender {
 	}
 }
 
-func (e *EmailSender) SendEmail(ctx context.Context, data any, recievers ...string) error {
+func (e *EmailSender) SendEmail(_ context.Context, data any, recievers ...string) error {
 	bytes, err := json.Marshal(data)
 	if err != nil {
 		return err
@@ -33,11 +33,11 @@ func (e *EmailSender) SendEmail(ctx context.Context, data any, recievers ...stri
 	return e.sendEmail(bytes, recievers...)
 }
 
-func (s *EmailSender) sendEmail(message []byte, receiversEmail ...string) error {
+func (e *EmailSender) sendEmail(message []byte, receiversEmail ...string) error {
 	return smtp.SendMail(
-		s.address,
-		s.auth,
-		s.cfg.user,
+		e.address,
+		e.auth,
+		e.cfg.user,
 		receiversEmail,
 		message,
 	)

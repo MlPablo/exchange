@@ -5,7 +5,7 @@ import (
 	"encoding/json"
 	"exchange/pkg/domain"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"net/http"
 	"strings"
 )
@@ -14,25 +14,24 @@ const (
 	apikey       = "apikey"
 	baseCurrency = "base_currency"
 	currencies   = "currencies"
-	get          = "GET"
 )
 
-type CurrencyApi struct {
-	baseUrl string
+type CurrencyAPI struct {
+	baseURL string
 	cfg     *Config
 }
 
 // This is the implementation of logic that can get currency.
 // So service doesn't need to know about how we do this, and we can implement any currency api and interfaces we want
 // I'm not sure about putting this into infrastructure folder.
-func NewCurrencyApi(cfg *Config, link string) *CurrencyApi {
-	return &CurrencyApi{
+func NewCurrencyAPI(cfg *Config, link string) *CurrencyAPI {
+	return &CurrencyAPI{
 		cfg:     cfg,
-		baseUrl: link,
+		baseURL: link,
 	}
 }
 
-func (api *CurrencyApi) GetCurrency(ctx context.Context, cur *domain.Currency) (float64, error) {
+func (api *CurrencyAPI) GetCurrency(ctx context.Context, cur *domain.Currency) (float64, error) {
 	resp, err := api.makeLatestCurrencyRequest(ctx, cur.BaseCurrency, cur.QuoteCurrency)
 	if err != nil {
 		return 0, err
@@ -41,7 +40,7 @@ func (api *CurrencyApi) GetCurrency(ctx context.Context, cur *domain.Currency) (
 	return resp.Data.Uah.Value, nil
 }
 
-func (api *CurrencyApi) makeLatestCurrencyRequest(
+func (api *CurrencyAPI) makeLatestCurrencyRequest(
 	ctx context.Context,
 	base, quote string,
 ) (*apiResponse, error) {
@@ -49,8 +48,8 @@ func (api *CurrencyApi) makeLatestCurrencyRequest(
 
 	req, err := http.NewRequestWithContext(
 		ctx,
-		"GET",
-		fmt.Sprintf("%s/%s", api.baseUrl, latest),
+		http.MethodGet,
+		fmt.Sprintf("%s/%s", api.baseURL, latest),
 		nil,
 	)
 	if err != nil {
@@ -75,13 +74,13 @@ func (api *CurrencyApi) makeLatestCurrencyRequest(
 	}
 
 	defer resp.Body.Close()
-	respBody, err := ioutil.ReadAll(resp.Body)
+	respBody, err := io.ReadAll(resp.Body)
 	if err != nil {
 		return nil, err
 	}
 
 	apiResp := new(apiResponse)
-	if err := json.Unmarshal(respBody, apiResp); err != nil {
+	if err = json.Unmarshal(respBody, apiResp); err != nil {
 		return nil, err
 	}
 

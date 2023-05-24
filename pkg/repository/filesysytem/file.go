@@ -2,7 +2,6 @@ package filesysytem
 
 import (
 	"fmt"
-	"io/ioutil"
 	"os"
 	"strings"
 )
@@ -16,7 +15,7 @@ func (f *fileSystemRepository) loadIndex() error {
 		return nil
 	}
 
-	data, err := ioutil.ReadFile(f.filePath)
+	data, err := os.ReadFile(f.filePath)
 	if err != nil {
 		return fmt.Errorf("failed to read file by path: %s", f.filePath)
 	}

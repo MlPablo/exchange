@@ -18,7 +18,7 @@ func NewMemoryRepository() domain.EmailRepository {
 	}
 }
 
-func (m *memoryEmailRepository) SaveEmail(ctx context.Context, eu *domain.EmailUser) error {
+func (m *memoryEmailRepository) SaveEmail(_ context.Context, eu *domain.EmailUser) error {
 	m.mu.Lock()
 	defer m.mu.Unlock()
 
@@ -28,7 +28,7 @@ func (m *memoryEmailRepository) SaveEmail(ctx context.Context, eu *domain.EmailU
 }
 
 func (m *memoryEmailRepository) GetByEmail(
-	ctx context.Context,
+	_ context.Context,
 	email string,
 ) (*domain.EmailUser, error) {
 	m.mu.RLock()
@@ -43,7 +43,7 @@ func (m *memoryEmailRepository) GetByEmail(
 }
 
 func (m *memoryEmailRepository) GetAllEmails(
-	ctx context.Context,
+	_ context.Context,
 ) ([]string, error) {
 	m.mu.RLock()
 	defer m.mu.RUnlock()
@@ -56,7 +56,7 @@ func (m *memoryEmailRepository) GetAllEmails(
 
 	return emails, nil
 }
-func (m *memoryEmailRepository) EmailExist(ctx context.Context, email string) (bool, error) {
+func (m *memoryEmailRepository) EmailExist(_ context.Context, email string) (bool, error) {
 	m.mu.RLock()
 	defer m.mu.RUnlock()
 

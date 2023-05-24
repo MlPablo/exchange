@@ -2,6 +2,7 @@ package http
 
 import (
 	"context"
+	"errors"
 	"exchange/pkg"
 	"exchange/pkg/domain"
 	"net/http"
@@ -37,14 +38,14 @@ func (e *exchangeHandler) GetBtcToUahCurrency(c echo.Context) error {
 }
 
 // Due to API, we can't send an error on this response.
-// goroutine here to do non-waiting operations and just log if the error had been occurred
+// goroutine here to do non-waiting operations and just log if the error had been occurred.
 func (e *exchangeHandler) SendEmails(c echo.Context) error {
 	go func() {
 		if err := e.services.NotificatioinService.Notify(
 			context.Background(),
 			domain.DefaultNotification(),
 		); err != nil {
-			logrus.Errorf("error on sending emails: %w", err)
+			logrus.Errorf("error on sending emails: %v", err)
 		}
 	}()
 
@@ -52,7 +53,7 @@ func (e *exchangeHandler) SendEmails(c echo.Context) error {
 }
 
 // In API there was nothing about invalid requests,
-// but I add validation to prevent invalid or empty mail requests
+// but I add validation to prevent invalid or empty mail requests.
 func (e *exchangeHandler) CreateMailSubscriber(c echo.Context) error {
 	ctx := c.Request().Context()
 
@@ -69,21 +70,21 @@ func (e *exchangeHandler) CreateMailSubscriber(c echo.Context) error {
 	return c.JSON(http.StatusOK, nil)
 }
 
-// based on the error we define the response status code
+// based on the error we define the response status code.
 func getStatusCode(err error) int {
 	if err == nil {
 		return http.StatusOK
 	}
 
 	logrus.Error(err)
-	switch err {
-	case domain.ErrInternalServer:
+	switch {
+	case errors.Is(err, domain.ErrInternalServer):
 		return http.StatusInternalServerError
-	case domain.ErrAlreadyExist:
+	case errors.Is(err, domain.ErrAlreadyExist):
 		return http.StatusConflict
-	case domain.ErrNotFound:
+	case errors.Is(err, domain.ErrNotFound):
 		return http.StatusNotFound
-	case domain.ErrInvalidStatus, domain.ErrBadRequst:
+	case errors.Is(err, domain.ErrBadRequst) || errors.Is(err, domain.ErrInvalidStatus):
 		return http.StatusBadRequest
 	default:
 		return http.StatusInternalServerError

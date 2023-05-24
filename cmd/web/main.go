@@ -2,13 +2,13 @@ package main
 
 import (
 	"context"
+	"errors"
 	"exchange/pkg"
 	_http "exchange/pkg/http"
 	"exchange/pkg/infrastructure/currency/currencyapi"
 	"exchange/pkg/infrastructure/mail"
 	"exchange/pkg/repository/filesysytem"
 	"exchange/pkg/services"
-	"log"
 	"net/http"
 	"os"
 	"os/signal"
@@ -20,18 +20,18 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
-func init() {
-	godotenv.Load(".env")
-}
-
 func main() {
+	if err := godotenv.Load(".env"); err != nil {
+		logrus.Fatal(err)
+	}
+
 	ctx, cancel := context.WithCancel(context.Background())
 
 	logrus.Info("starting application...")
 	// mailRepo := mem.NewMemoryRepository()
 	mailRepo, err := filesysytem.NewFileSystemRepository(os.Getenv("FILE_STORE_PATH"))
 	if err != nil {
-		log.Fatal(err)
+		logrus.Fatal(err)
 	}
 
 	mCfg, err := mail.NewConfig(
@@ -41,12 +41,12 @@ func main() {
 		os.Getenv("SMTP_PORT"),
 	)
 	if err != nil {
-		log.Fatal(err)
+		logrus.Fatal(err)
 	}
 
 	mailPusher := mail.NewMailService(mCfg)
 
-	currencyGetter := currencyapi.NewCurrencyApi(
+	currencyGetter := currencyapi.NewCurrencyAPI(
 		currencyapi.NewConfig(os.Getenv("CURR_API_KEY")),
 		os.Getenv("CURR_URL"),
 	)
@@ -61,8 +61,8 @@ func main() {
 	_http.NewCurrencyHandler(e, srvs)
 
 	go func() {
-		if err := e.Start(":" + os.Getenv("SERVER_ADDR")); err != http.ErrServerClosed {
-			log.Fatal(err)
+		if err = e.Start(":" + os.Getenv("SERVER_ADDR")); !errors.Is(err, http.ErrServerClosed) {
+			logrus.Fatal(err)
 		}
 	}()
 

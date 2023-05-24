@@ -32,7 +32,7 @@ func NewNotificationService(
 }
 
 // Notify users via email due to our business logic.
-func (n *notificationService) Notify(ctx context.Context, not *domain.Notification) error {
+func (n *notificationService) Notify(ctx context.Context, _ *domain.Notification) error {
 	btcUsd := domain.GetBitcoinToUAH()
 
 	currency, err := n.currencyService.GetCurrency(ctx, btcUsd)

@@ -4,7 +4,6 @@ import (
 	"context"
 	"exchange/pkg/domain"
 	"fmt"
-	"io/ioutil"
 	"os"
 	"strings"
 	"sync"
@@ -14,7 +13,8 @@ import (
 // This was done, because simple get operation is too heavy
 // where we need to read the whole file and then iterate over every email (O(n)).
 // On the big amount of data this can lead to performance issues.
-// So better if we will index the file on the startup of the programm and then we will add new items in the file and index
+// So better if we will index the file on the startup of the programm
+// and then we will add new items in the file and index.
 // Get All operation made with file, just because I want to show read operation with filesystem)
 // Don't forget about locks.
 type fileSystemRepository struct {
@@ -36,9 +36,8 @@ func NewFileSystemRepository(filePath string) (domain.EmailRepository, error) {
 	}
 
 	return f, nil
-
 }
-func (f *fileSystemRepository) SaveEmail(ctx context.Context, eu *domain.EmailUser) error {
+func (f *fileSystemRepository) SaveEmail(_ context.Context, eu *domain.EmailUser) error {
 	f.fm.Lock()
 	defer f.fm.Unlock()
 
@@ -61,7 +60,7 @@ func (f *fileSystemRepository) SaveEmail(ctx context.Context, eu *domain.EmailUs
 }
 
 func (f *fileSystemRepository) GetByEmail(
-	ctx context.Context,
+	_ context.Context,
 	email string,
 ) (*domain.EmailUser, error) {
 	f.im.RLock()
@@ -76,7 +75,7 @@ func (f *fileSystemRepository) GetByEmail(
 }
 
 func (f *fileSystemRepository) GetAllEmails(
-	ctx context.Context,
+	_ context.Context,
 ) ([]string, error) {
 	f.fm.RLock()
 	defer f.fm.RUnlock()
@@ -85,7 +84,7 @@ func (f *fileSystemRepository) GetAllEmails(
 		return []string{}, nil
 	}
 
-	data, err := ioutil.ReadFile(f.filePath)
+	data, err := os.ReadFile(f.filePath)
 	if err != nil {
 		return nil, fmt.Errorf("failed to read file by path: %s", f.filePath)
 	}
@@ -105,7 +104,7 @@ func (f *fileSystemRepository) GetAllEmails(
 	return emails, nil
 }
 
-func (f *fileSystemRepository) EmailExist(ctx context.Context, email string) (bool, error) {
+func (f *fileSystemRepository) EmailExist(_ context.Context, email string) (bool, error) {
 	f.im.RLock()
 	defer f.im.RUnlock()
 
