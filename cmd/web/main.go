@@ -11,9 +11,13 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"os/signal"
+	"syscall"
 
 	"github.com/joho/godotenv"
 	"github.com/labstack/echo"
+	"github.com/labstack/echo/middleware"
+	"github.com/sirupsen/logrus"
 )
 
 func init() {
@@ -21,9 +25,9 @@ func init() {
 }
 
 func main() {
-	ctx := context.Background()
+	ctx, cancel := context.WithCancel(context.Background())
 
-	e := echo.New()
+	logrus.Info("starting application...")
 	// mailRepo := mem.NewMemoryRepository()
 	mailRepo, err := filesysytem.NewFileSystemRepository(os.Getenv("FILE_STORE_PATH"))
 	if err != nil {
@@ -52,9 +56,35 @@ func main() {
 
 	srvs := pkg.NewServices(currencyGetter, userMailService, notifierService)
 
+	e := echo.New()
+	e.Use(getServerLogger())
 	_http.NewCurrencyHandler(e, srvs)
 
-	if err := e.Start(":8080"); err != http.ErrServerClosed {
-		log.Fatal(err)
-	}
+	go func() {
+		if err := e.Start(":" + os.Getenv("SERVER_ADDR")); err != http.ErrServerClosed {
+			log.Fatal(err)
+		}
+	}()
+
+	logrus.Info("application started =)")
+
+	go syscallWait(cancel)
+	<-ctx.Done()
+
+	logrus.Info("application stopped.")
+}
+
+func syscallWait(cancelFunc func()) {
+	syscallCh := make(chan os.Signal, 1)
+	signal.Notify(syscallCh, syscall.SIGINT, syscall.SIGTERM, syscall.SIGHUP)
+
+	<-syscallCh
+
+	cancelFunc()
+}
+
+func getServerLogger() echo.MiddlewareFunc {
+	return middleware.LoggerWithConfig(middleware.LoggerConfig{
+		Format: "method=${method}, uri=${uri}, status=${status}\n",
+	})
 }

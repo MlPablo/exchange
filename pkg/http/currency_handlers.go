@@ -7,6 +7,7 @@ import (
 	"net/http"
 
 	"github.com/labstack/echo"
+	"github.com/sirupsen/logrus"
 )
 
 type ExchangeHandler struct {
@@ -44,8 +45,7 @@ func (e *ExchangeHandler) SendEmails(c echo.Context) error {
 			context.Background(),
 			domain.DefaultNotification(),
 		); err != nil {
-
-			// TODO: ADD LOGGER WITH ERROR
+			logrus.Errorf("error on sending emails: %w", err)
 		}
 	}()
 
@@ -73,6 +73,7 @@ func getStatusCode(err error) int {
 		return http.StatusOK
 	}
 
+	logrus.Error(err)
 	switch err {
 	case domain.ErrInternalServer:
 		return http.StatusInternalServerError
