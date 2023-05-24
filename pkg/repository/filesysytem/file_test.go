@@ -62,6 +62,7 @@ func TestEmailExist(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
+
 	defer os.Remove(filePath)
 
 	var exist bool
@@ -89,9 +90,11 @@ func TestGetAll(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
+
 	defer os.Remove(filePath)
 
 	emails := make([]string, batch)
+
 	for i := 0; i < batch; i++ {
 		mail := faker.Email()
 		err = repo.SaveEmail(ctx, domain.NewEmailUser(mail))

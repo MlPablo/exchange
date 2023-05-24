@@ -7,7 +7,7 @@ import (
 
 // Here we define mail service interface that we need for sending emails.
 type IMailService interface {
-	SendEmail(ctx context.Context, data any, recievers ...string) error
+	SendEmail(ctx context.Context, data any, receivers ...string) error
 }
 
 type notificationService struct {

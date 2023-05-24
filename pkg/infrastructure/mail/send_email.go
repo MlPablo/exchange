@@ -24,13 +24,13 @@ func NewMailService(cfg *Config) *EmailSender {
 	}
 }
 
-func (e *EmailSender) SendEmail(_ context.Context, data any, recievers ...string) error {
+func (e *EmailSender) SendEmail(_ context.Context, data any, receivers ...string) error {
 	bytes, err := json.Marshal(data)
 	if err != nil {
 		return err
 	}
 
-	return e.sendEmail(bytes, recievers...)
+	return e.sendEmail(bytes, receivers...)
 }
 
 func (e *EmailSender) sendEmail(message []byte, receiversEmail ...string) error {

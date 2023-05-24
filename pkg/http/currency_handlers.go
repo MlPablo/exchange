@@ -29,6 +29,7 @@ func (e *exchangeHandler) GetBtcToUahCurrency(c echo.Context) error {
 	ctx := c.Request().Context()
 
 	cur := domain.GetBitcoinToUAH()
+
 	resp, err := e.services.CurrencyService.GetCurrency(ctx, cur)
 	if err != nil {
 		return c.JSON(getStatusCode(err), nil)
@@ -77,6 +78,7 @@ func getStatusCode(err error) int {
 	}
 
 	logrus.Error(err)
+
 	switch {
 	case errors.Is(err, domain.ErrInternalServer):
 		return http.StatusInternalServerError

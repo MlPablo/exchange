@@ -68,12 +68,12 @@ func (api *CurrencyAPI) makeLatestCurrencyRequest(
 	if err != nil {
 		return nil, err
 	}
+	defer resp.Body.Close()
 
 	if resp.StatusCode != http.StatusOK {
 		return nil, domain.ErrInvalidStatus
 	}
 
-	defer resp.Body.Close()
 	respBody, err := io.ReadAll(resp.Body)
 	if err != nil {
 		return nil, err
