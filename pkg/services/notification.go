@@ -5,7 +5,8 @@ import (
 	"exchange/pkg/domain"
 )
 
-type MailService interface {
+// Here we define mail service interface that we need for sending emails.
+type IMailService interface {
 	SendEmail(ctx context.Context, data any, recievers ...string) error
 }
 
@@ -13,14 +14,14 @@ type notificationService struct {
 	ctx             context.Context
 	emailUserRepo   domain.EmailRepository
 	currencyService domain.ICurrencyService
-	mailService     MailService
+	mailService     IMailService
 }
 
 func NewNotificationService(
 	ctx context.Context,
 	emailRepo domain.EmailRepository,
 	currencyService domain.ICurrencyService,
-	mailService MailService,
+	mailService IMailService,
 ) domain.INotificationService {
 	return &notificationService{
 		ctx:             ctx,
@@ -30,6 +31,7 @@ func NewNotificationService(
 	}
 }
 
+// Notify users via email due to our business logic.
 func (n *notificationService) Notify(ctx context.Context, not *domain.Notification) error {
 	btcUsd := domain.GetBitcoinToUAH()
 

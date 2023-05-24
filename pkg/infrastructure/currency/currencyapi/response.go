@@ -2,6 +2,7 @@ package currencyapi
 
 import "time"
 
+// this response from currencyapi website.
 type apiResponse struct {
 	Meta meta `json:"meta"`
 	Data data `json:"data"`

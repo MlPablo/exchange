@@ -7,13 +7,20 @@ import (
 	"net/smtp"
 )
 
+// This is the implementation of logic that can send emails.
+// So service doesn't need to know about how we do this, and we can implement any mail interfaces we want
+// I'm not sure about putting this into infrastructure folder.
 type EmailSender struct {
-	cfg *Config
+	cfg     *Config
+	auth    smtp.Auth
+	address string
 }
 
 func NewMailService(cfg *Config) *EmailSender {
 	return &EmailSender{
-		cfg: cfg,
+		cfg:     cfg,
+		auth:    smtp.PlainAuth("", cfg.user, cfg.password, cfg.smtpHost),
+		address: fmt.Sprintf("%s:%s", cfg.smtpHost, cfg.smtpPort),
 	}
 }
 
@@ -27,14 +34,9 @@ func (e *EmailSender) SendEmail(ctx context.Context, data any, recievers ...stri
 }
 
 func (s *EmailSender) sendEmail(message []byte, receiversEmail ...string) error {
-	// Authentication.
-	// TODO: add auth into struct
-	auth := smtp.PlainAuth("", s.cfg.user, s.cfg.password, s.cfg.smtpHost)
-
-	// Sending email.
 	return smtp.SendMail(
-		fmt.Sprintf("%s:%s", s.cfg.smtpHost, s.cfg.smtpPort),
-		auth,
+		s.address,
+		s.auth,
 		s.cfg.user,
 		receiversEmail,
 		message,

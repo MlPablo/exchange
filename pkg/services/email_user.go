@@ -20,6 +20,7 @@ func NewEmailUserService(
 	}
 }
 
+// Check if mail exist and than create new.
 func (e *emailUserService) NewEmailUser(ctx context.Context, emailUser *domain.EmailUser) error {
 	exist, err := e.emailUserRepo.EmailExist(ctx, emailUser.Email)
 	if err != nil {

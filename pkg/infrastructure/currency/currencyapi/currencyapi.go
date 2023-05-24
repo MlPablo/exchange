@@ -22,6 +22,9 @@ type CurrencyApi struct {
 	cfg     *Config
 }
 
+// This is the implementation of logic that can get currency.
+// So service doesn't need to know about how we do this, and we can implement any currency api and interfaces we want
+// I'm not sure about putting this into infrastructure folder.
 func NewCurrencyApi(cfg *Config, link string) *CurrencyApi {
 	return &CurrencyApi{
 		cfg:     cfg,

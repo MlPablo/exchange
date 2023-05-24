@@ -10,24 +10,21 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
-type ExchangeHandler struct {
+type exchangeHandler struct {
 	services pkg.Services
 }
 
-type Controllers interface {
-	RegisterHandlers()
-}
-
 func NewCurrencyHandler(e *echo.Echo, services *pkg.Services) {
-	handler := &ExchangeHandler{
+	handler := &exchangeHandler{
 		services: *services,
 	}
+
 	e.GET("/rate", handler.GetBtcToUahCurrency)
 	e.POST("/subscribe", handler.CreateMailSubscriber)
 	e.POST("/sendEmails", handler.SendEmails)
 }
 
-func (e *ExchangeHandler) GetBtcToUahCurrency(c echo.Context) error {
+func (e *exchangeHandler) GetBtcToUahCurrency(c echo.Context) error {
 	ctx := c.Request().Context()
 
 	cur := domain.GetBitcoinToUAH()
@@ -39,7 +36,9 @@ func (e *ExchangeHandler) GetBtcToUahCurrency(c echo.Context) error {
 	return c.JSON(http.StatusOK, resp)
 }
 
-func (e *ExchangeHandler) SendEmails(c echo.Context) error {
+// Due to API, we can't send an error on this response.
+// goroutine here to do non-waiting operations and just log if the error had been occurred
+func (e *exchangeHandler) SendEmails(c echo.Context) error {
 	go func() {
 		if err := e.services.NotificatioinService.Notify(
 			context.Background(),
@@ -52,7 +51,9 @@ func (e *ExchangeHandler) SendEmails(c echo.Context) error {
 	return c.JSON(http.StatusOK, nil)
 }
 
-func (e *ExchangeHandler) CreateMailSubscriber(c echo.Context) error {
+// In API there was nothing about invalid requests,
+// but I add validation to prevent invalid or empty mail requests
+func (e *exchangeHandler) CreateMailSubscriber(c echo.Context) error {
 	ctx := c.Request().Context()
 
 	email := domain.NewEmailUser(c.FormValue("email"))
@@ -68,6 +69,7 @@ func (e *ExchangeHandler) CreateMailSubscriber(c echo.Context) error {
 	return c.JSON(http.StatusOK, nil)
 }
 
+// based on the error we define the response status code
 func getStatusCode(err error) int {
 	if err == nil {
 		return http.StatusOK

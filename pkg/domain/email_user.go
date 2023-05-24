@@ -2,6 +2,8 @@ package domain
 
 import "context"
 
+// EmailUser domain that responds for saving info about emails.
+// We can easily expand this logic for more complex users. For example user name, etc...
 type EmailUser struct {
 	Email string `json:"email"`
 }
