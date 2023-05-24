@@ -14,6 +14,7 @@ type memoryEmailRepository struct {
 func NewMemoryRepository() domain.EmailRepository {
 	return &memoryEmailRepository{
 		db: make(map[string]struct{}),
+		mu: sync.RWMutex{},
 	}
 }
 
