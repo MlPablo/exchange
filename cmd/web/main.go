@@ -3,12 +3,6 @@ package main
 import (
 	"context"
 	"errors"
-	"exchange/pkg"
-	_http "exchange/pkg/http"
-	"exchange/pkg/infrastructure/currency/currencyapi"
-	"exchange/pkg/infrastructure/mail"
-	"exchange/pkg/repository/filesysytem"
-	"exchange/pkg/services"
 	"net/http"
 	"os"
 	"os/signal"
@@ -18,6 +12,13 @@ import (
 	"github.com/labstack/echo"
 	"github.com/labstack/echo/middleware"
 	"github.com/sirupsen/logrus"
+
+	"exchange/pkg"
+	_http "exchange/pkg/http"
+	"exchange/pkg/infrastructure/currency/currencyapi"
+	"exchange/pkg/infrastructure/mail"
+	"exchange/pkg/repository/filesysytem"
+	"exchange/pkg/services"
 )
 
 func main() {

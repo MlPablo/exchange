@@ -3,11 +3,12 @@ package currencyapi
 import (
 	"context"
 	"encoding/json"
-	"exchange/pkg/domain"
 	"fmt"
 	"io"
 	"net/http"
 	"strings"
+
+	"exchange/pkg/domain"
 )
 
 const (

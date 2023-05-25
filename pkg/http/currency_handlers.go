@@ -3,21 +3,22 @@ package http
 import (
 	"context"
 	"errors"
-	"exchange/pkg"
-	"exchange/pkg/domain"
 	"net/http"
 
 	"github.com/labstack/echo"
 	"github.com/sirupsen/logrus"
+
+	"exchange/pkg"
+	"exchange/pkg/domain"
 )
 
 type exchangeHandler struct {
-	services pkg.Services
+	services *pkg.Services
 }
 
 func NewCurrencyHandler(e *echo.Echo, services *pkg.Services) {
 	handler := &exchangeHandler{
-		services: *services,
+		services: services,
 	}
 
 	e.GET("/rate", handler.GetBtcToUahCurrency)
