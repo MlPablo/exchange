@@ -24,12 +24,23 @@ The API follows the Swagger 2.0 specification. You can find the detailed API doc
 ```shell
 git clone https://github.com/MlPablo/exchange.git
 cd exchange
+```
 
 2. Build the Docker image:
+```shell
 docker build -t exchange .
+```
 
 3. Run the Docker container:
+```shell
 docker run -p 8080:8080 exchange
+```
 
 4. Or run locally:
+```shell
 go run cmd/web/main.go
+```
+
+Your server will start on port 8080
+
+
