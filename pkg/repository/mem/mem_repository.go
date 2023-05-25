@@ -2,8 +2,9 @@ package mem
 
 import (
 	"context"
-	"exchange/pkg/domain"
 	"sync"
+
+	"exchange/pkg/domain"
 )
 
 type memoryEmailRepository struct {
@@ -56,6 +57,7 @@ func (m *memoryEmailRepository) GetAllEmails(
 
 	return emails, nil
 }
+
 func (m *memoryEmailRepository) EmailExist(_ context.Context, email string) (bool, error) {
 	m.mu.RLock()
 	defer m.mu.RUnlock()

@@ -2,11 +2,12 @@ package filesysytem
 
 import (
 	"context"
-	"exchange/pkg/domain"
 	"fmt"
 	"os"
 	"strings"
 	"sync"
+
+	"exchange/pkg/domain"
 )
 
 // I have decided to use a memory index for get operations for.
@@ -37,6 +38,7 @@ func NewFileSystemRepository(filePath string) (domain.EmailRepository, error) {
 
 	return f, nil
 }
+
 func (f *fileSystemRepository) SaveEmail(_ context.Context, eu *domain.EmailUser) error {
 	f.fm.Lock()
 	defer f.fm.Unlock()

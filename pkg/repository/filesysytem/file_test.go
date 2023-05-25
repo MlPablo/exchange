@@ -2,8 +2,6 @@ package filesysytem_test
 
 import (
 	"context"
-	"exchange/pkg/domain"
-	"exchange/pkg/repository/filesysytem"
 	"os"
 	"reflect"
 	"strings"
@@ -12,6 +10,9 @@ import (
 	"github.com/bxcodec/faker/v3"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+
+	"exchange/pkg/domain"
+	"exchange/pkg/repository/filesysytem"
 )
 
 const filePath = "test.txt"
@@ -24,7 +25,7 @@ func TestFileSave(t *testing.T) {
 
 	defer os.Remove(filePath)
 
-	var testEmail = faker.Email()
+	testEmail := faker.Email()
 
 	err = repo.SaveEmail(ctx, domain.NewEmailUser(testEmail))
 	require.NoError(t, err)
@@ -43,7 +44,7 @@ func TestSave(t *testing.T) {
 
 	defer os.Remove(filePath)
 
-	var testEmail = faker.Email()
+	testEmail := faker.Email()
 
 	err = repo.SaveEmail(ctx, domain.NewEmailUser(testEmail))
 	require.NoError(t, err)

@@ -2,9 +2,7 @@ package mail
 
 import "errors"
 
-var (
-	ErrConfig = errors.New("empty config")
-)
+var ErrConfig = errors.New("empty config")
 
 type Config struct {
 	user     string
