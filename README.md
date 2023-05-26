@@ -44,12 +44,18 @@ go run ./...
 Your server will start on port 8080
 
 ### Project structure
-/cmd/web/main.go - entry point. Here all modules are setups.
-/pkg
-    /domain - all data models and their communication API
-    /http - routes. they have access to services.
-    /infrastructure - third part API logic. Mail send logic and get currency logic. Thay must implement interface defined by services that are using them.
-    /repository - logic for storing data. It only depends on domain.
-    /services - business logic of application. They depends on domain, repository. (sometimes other services)
+The project follows a modular structure with different directories serving specific purposes. Here's a breakdown of the directory structure:
+```shell
+/cmd/web/main.go         - Entry point of the application where all modules are set up.
 
-.env - all enviroment variables. here you can define server port, email user etc...
+/pkg
+    /domain              - Contains data models and their communication API.
+    /http                - Handles routes and has access to services.
+    /infrastructure      - Handles third-party API logic such as sending emails and retrieving currency information. These modules must implement the interfaces defined by the services that use them.
+    /repository          - Contains logic for storing data and interacts only with the domain.
+    /services            - Implements the business logic of the application. It depends on the domain and repository modules (and sometimes other services).
+
+.env                     - Contains environment variables where you can define server port, email user, and other configuration options.
+```
+
+The project structure is organized in a way that promotes modularity, separation of concerns, and easy navigation. Each directory has a specific purpose and encapsulates related functionality, allowing for better maintainability and scalability of the application.
