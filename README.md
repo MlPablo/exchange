@@ -12,6 +12,8 @@ The API follows the Swagger 2.0 specification. You can find the detailed API doc
 - `/subscribe`: Subscribes an email address to receive rate notifications.
 - `/sendEmails`: Sends rate BTC to UAH to all subscribed email addresses.
 
+Please note that all API endpoints are prefixed with `/api` to ensure a consistent path structure.
+
 ## Requirements
 
 - Golang
