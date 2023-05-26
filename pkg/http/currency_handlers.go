@@ -43,7 +43,7 @@ func (e *exchangeHandler) GetBtcToUahCurrency(c echo.Context) error {
 // goroutine here to do non-waiting operations and just log if the error had been occurred.
 func (e *exchangeHandler) SendEmails(c echo.Context) error {
 	go func() {
-		if err := e.services.NotificatioinService.Notify(
+		if err := e.services.NotificationService.Notify(
 			context.Background(),
 			domain.DefaultNotification(),
 		); err != nil {
@@ -87,7 +87,7 @@ func getStatusCode(err error) int {
 		return http.StatusConflict
 	case errors.Is(err, domain.ErrNotFound):
 		return http.StatusNotFound
-	case errors.Is(err, domain.ErrBadRequst) || errors.Is(err, domain.ErrInvalidStatus):
+	case errors.Is(err, domain.ErrBadRequest) || errors.Is(err, domain.ErrInvalidStatus):
 		return http.StatusBadRequest
 	default:
 		return http.StatusInternalServerError

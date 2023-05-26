@@ -1,6 +1,6 @@
 # BTC Application
 
-This repository contains a Golang server that implements an API for retrieving the current BTC to UAH exchange rate, managing email subscriptions for rate change notifications, and sending rate to subscribed users.
+This repository contains a Golang server that implements an API for retrieving the current BTC to UAH exchange rate, managing email subscriptions for rate change notifications, and sending rate to subscribed users. App is using <https://currencyapi.com/> for getting BTC/UAH rate.
 
 ## API Specification
 

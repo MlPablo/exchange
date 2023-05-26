@@ -16,7 +16,7 @@ func NewEmailUser(email string) *EmailUser {
 
 func (e *EmailUser) Validate() error {
 	if !isEmailValid(e.Email) {
-		return ErrBadRequst
+		return ErrBadRequest
 	}
 
 	return nil

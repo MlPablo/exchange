@@ -12,7 +12,7 @@ import (
 )
 
 const (
-	apikey       = "apikey"
+	apiKey       = "apikey"
 	baseCurrency = "base_currency"
 	currencies   = "currencies"
 )
@@ -60,7 +60,7 @@ func (api *CurrencyAPI) makeLatestCurrencyRequest(
 	req.Header.Add("Accept", "application/json")
 
 	q := req.URL.Query()
-	q.Add(apikey, api.cfg.apiKey)
+	q.Add(apiKey, api.cfg.apiKey)
 	q.Add(baseCurrency, strings.ToUpper(base))
 	q.Add(currencies, strings.ToUpper(quote))
 	req.URL.RawQuery = q.Encode()

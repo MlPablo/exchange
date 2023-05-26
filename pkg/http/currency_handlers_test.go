@@ -89,7 +89,7 @@ func TestSendEmails(t *testing.T) {
 	e := echo.New()
 	h := &exchangeHandler{
 		services: &pkg.Services{
-			NotificatioinService: &mock.NotificationService{},
+			NotificationService: &mock.NotificationService{},
 		},
 	}
 
