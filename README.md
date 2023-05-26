@@ -43,4 +43,13 @@ go run ./...
 
 Your server will start on port 8080
 
+### Project structure
+/cmd/web/main.go - entry point. Here all modules are setups.
+/pkg
+    /domain - all data models and their communication API
+    /http - routes. they have access to services.
+    /infrastructure - third part API logic. Mail send logic and get currency logic. Thay must implement interface defined by services that are using them.
+    /repository - logic for storing data. It only depends on domain.
+    /services - business logic of application. They depends on domain, repository. (sometimes other services)
 
+.env - all enviroment variables. here you can define server port, email user etc...
