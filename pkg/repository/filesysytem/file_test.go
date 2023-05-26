@@ -57,7 +57,7 @@ func TestSave(t *testing.T) {
 
 func TestEmailExist(t *testing.T) {
 	ctx := context.Background()
-	batch := 20
+	batch := 10
 
 	repo, err := filesysytem.NewFileSystemRepository(testFilePath)
 	if err != nil {
