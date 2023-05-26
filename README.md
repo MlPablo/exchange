@@ -38,7 +38,7 @@ docker run -p 8080:8080 exchange
 
 4. Or run locally:
 ```shell
-go run cmd/web/main.go
+go run ./...
 ```
 
 Your server will start on port 8080
