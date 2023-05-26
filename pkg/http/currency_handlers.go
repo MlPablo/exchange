@@ -21,9 +21,11 @@ func NewCurrencyHandler(e *echo.Echo, services *pkg.Services) {
 		services: services,
 	}
 
-	e.GET("/rate", handler.GetBtcToUahCurrency)
-	e.POST("/subscribe", handler.CreateMailSubscriber)
-	e.POST("/sendEmails", handler.SendEmails)
+	group := e.Group("/api")
+
+	group.GET("/rate", handler.GetBtcToUahCurrency)
+	group.POST("/subscribe", handler.CreateMailSubscriber)
+	group.POST("/sendEmails", handler.SendEmails)
 }
 
 func (e *exchangeHandler) GetBtcToUahCurrency(c echo.Context) error {
