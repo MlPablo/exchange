@@ -15,22 +15,22 @@ import (
 	"exchange/pkg/repository/filesysytem"
 )
 
-const filePath = "test.txt"
+const testFilePath = "test.txt"
 
 func TestFileSave(t *testing.T) {
 	ctx := context.Background()
 
-	repo, err := filesysytem.NewFileSystemRepository(filePath)
+	repo, err := filesysytem.NewFileSystemRepository(testFilePath)
 	require.NoError(t, err)
 
-	defer os.Remove(filePath)
+	defer os.Remove(testFilePath)
 
 	testEmail := faker.Email()
 
 	err = repo.SaveEmail(ctx, domain.NewEmailUser(testEmail))
 	require.NoError(t, err)
 
-	fileContent, err := os.ReadFile(filePath)
+	fileContent, err := os.ReadFile(testFilePath)
 	require.NoError(t, err)
 
 	assert.Equal(t, testEmail, strings.TrimSpace(string(fileContent)))
@@ -39,10 +39,10 @@ func TestFileSave(t *testing.T) {
 func TestSave(t *testing.T) {
 	ctx := context.Background()
 
-	repo, err := filesysytem.NewFileSystemRepository(filePath)
+	repo, err := filesysytem.NewFileSystemRepository(testFilePath)
 	require.NoError(t, err)
 
-	defer os.Remove(filePath)
+	defer os.Remove(testFilePath)
 
 	testEmail := faker.Email()
 
@@ -59,12 +59,12 @@ func TestEmailExist(t *testing.T) {
 	ctx := context.Background()
 	batch := 20
 
-	repo, err := filesysytem.NewFileSystemRepository(filePath)
+	repo, err := filesysytem.NewFileSystemRepository(testFilePath)
 	if err != nil {
 		t.Fatal(err)
 	}
 
-	defer os.Remove(filePath)
+	defer os.Remove(testFilePath)
 
 	var exist bool
 
@@ -87,12 +87,12 @@ func TestGetAll(t *testing.T) {
 	ctx := context.Background()
 	batch := 20
 
-	repo, err := filesysytem.NewFileSystemRepository(filePath)
+	repo, err := filesysytem.NewFileSystemRepository(testFilePath)
 	if err != nil {
 		t.Fatal(err)
 	}
 
-	defer os.Remove(filePath)
+	defer os.Remove(testFilePath)
 
 	emails := make([]string, batch)
 

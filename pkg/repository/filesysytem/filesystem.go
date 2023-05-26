@@ -21,8 +21,10 @@ import (
 type fileSystemRepository struct {
 	filePath string
 	index    map[string]struct{}
-	fm       sync.RWMutex
-	im       sync.RWMutex
+	// file mutex
+	fm sync.RWMutex
+	// index mutex
+	im sync.RWMutex
 }
 
 func NewFileSystemRepository(filePath string) (domain.EmailRepository, error) {
@@ -49,7 +51,7 @@ func (f *fileSystemRepository) SaveEmail(_ context.Context, eu *domain.EmailUser
 	}
 	defer file.Close()
 
-	if _, err = file.WriteString(eu.Email + "\n"); err != nil {
+	if _, err = file.WriteString(addEndOfTheLine(eu.Email)); err != nil {
 		return fmt.Errorf("failed write to file")
 	}
 
@@ -113,4 +115,8 @@ func (f *fileSystemRepository) EmailExist(_ context.Context, email string) (bool
 	_, ok := f.index[email]
 
 	return ok, nil
+}
+
+func addEndOfTheLine(data string) string {
+	return data + "\n"
 }

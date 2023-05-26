@@ -12,7 +12,7 @@ type Config struct {
 }
 
 func NewConfig(user, password, host, port string) (*Config, error) {
-	if user == "" || password == "" || host == "" || port == "" {
+	if isEmpty(user, password, host, port) {
 		return nil, ErrConfig
 	}
 
@@ -22,4 +22,13 @@ func NewConfig(user, password, host, port string) (*Config, error) {
 		smtpPort: port,
 		smtpHost: host,
 	}, nil
+}
+
+func isEmpty(s ...string) bool {
+	for _, v := range s {
+		if v == "" {
+			return true
+		}
+	}
+	return false
 }
