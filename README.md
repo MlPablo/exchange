@@ -21,6 +21,8 @@ Please note that all API endpoints are prefixed with `/api` to ensure a consiste
 
 ## Getting Started
 
+### Manually
+
 1. Clone the repository:
 
 ```shell
@@ -42,6 +44,22 @@ docker run -p 8080:8080 exchange
 ```shell
 go run ./...
 ```
+
+### Using make
+
+- To run the program with the binary, use the following command:
+  ```
+  make run
+  ```
+  This will compile the project and execute the resulting binary.
+  
+- To compile and run the Docker container, use the following command:
+  ```
+  make docker
+  ```
+  This will build a Docker image for the application and run it in a container.
+
+> **_NOTE:_**: Make sure you have Docker installed and running on your machine.
 
 Your server will start on port 8080
 
