@@ -34,9 +34,9 @@ func NewNotificationService(
 
 // Notify users via email due to our business logic.
 func (n *notificationService) Notify(ctx context.Context, _ *domain.Notification) error {
-	btcUsd := domain.GetBitcoinToUAH()
+	btcUah := domain.GetBitcoinToUAH()
 
-	currency, err := n.currencyService.GetCurrency(ctx, btcUsd)
+	currency, err := n.currencyService.GetCurrency(ctx, btcUah)
 	if err != nil {
 		return err
 	}

@@ -38,13 +38,13 @@ func (api *CurrencyAPI) GetCurrency(ctx context.Context, cur *domain.Currency) (
 		return 0, err
 	}
 
-	return resp.Data.Uah.Value, nil
+	return getValueFromResponse(resp, cur.QuoteCurrency)
 }
 
 func (api *CurrencyAPI) makeLatestCurrencyRequest(
 	ctx context.Context,
 	base, quote string,
-) (*apiResponse, error) {
+) ([]byte, error) {
 	const latest = "latest"
 
 	req, err := http.NewRequestWithContext(
@@ -75,15 +75,54 @@ func (api *CurrencyAPI) makeLatestCurrencyRequest(
 		return nil, domain.ErrInvalidStatus
 	}
 
-	respBody, err := io.ReadAll(resp.Body)
-	if err != nil {
-		return nil, err
+	return io.ReadAll(resp.Body)
+}
+
+// Rsponse format due to currencyapi documentation
+// So we need get generic currency without concrate type implementation
+//
+//	{
+//	    "meta": {
+//	        "last_updated_at": "2022-01-01T23:59:59Z"
+//	    },
+//	    "data": {
+//	        "AED": {
+//	            "code": "AED",
+//	            "value": 3.67306
+//	        },
+//	        "AFN": {
+//	            "code": "AFN",
+//	            "value": 91.80254
+//	        },
+//	        "...": "150+ more currencies"
+//	    }
+//	}
+func getValueFromResponse(m []byte, curr string) (float64, error) {
+	const (
+		dataField  = "data"
+		valueField = "value"
+	)
+
+	resp := make(map[string]interface{})
+
+	if err := json.Unmarshal(m, &resp); err != nil {
+		return 0, err
 	}
 
-	apiResp := new(apiResponse)
-	if err = json.Unmarshal(respBody, apiResp); err != nil {
-		return nil, err
+	data, ok := resp[dataField].(map[string]interface{})
+	if !ok {
+		return 0, domain.ErrInvalidStatus
 	}
 
-	return apiResp, nil
+	info, ok := data[curr].(map[string]interface{})
+	if !ok {
+		return 0, domain.ErrInvalidStatus
+	}
+
+	val, ok := info[valueField].(float64)
+	if !ok {
+		return 0, domain.ErrInvalidStatus
+	}
+
+	return val, nil
 }
